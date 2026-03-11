@@ -7,7 +7,7 @@ def load_and_combine_data(data_dir="data/raw"):
     """Loads all season_*.csv files and combines them."""
     all_files = glob.glob(os.path.join(data_dir, "season_*.csv"))
     if not all_files:
-        raise FileNotFoundError("No season data files found in 'data/' directory.")
+        raise FileNotFoundError("No season data files found in 'data/raw' directory.")
     
     df_list = []
     for filename in all_files:
