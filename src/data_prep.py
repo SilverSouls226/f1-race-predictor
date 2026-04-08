@@ -58,6 +58,10 @@ def aggregate_to_race_level(df):
         'points_scored': 'last',
         'team': 'last',
         'lap_time': ['mean', 'std', 'min'],
+        'sector1_time': 'mean',
+        'sector2_time': 'mean',
+        'sector3_time': 'mean',
+        'tyre_compound': lambda x: x.mode().iloc[0] if not x.mode().empty else np.nan,
         'pitted': 'sum', # Total pit stops
         'status': 'last', # Finished, Collision, etc.
         'air_temperature': 'mean',
@@ -83,6 +87,10 @@ def aggregate_to_race_level(df):
         'lap_time_mean': 'avg_lap_time',
         'lap_time_std': 'std_lap_time',
         'lap_time_min': 'best_lap_time',
+        'sector1_time_mean': 'avg_sector1',
+        'sector2_time_mean': 'avg_sector2',
+        'sector3_time_mean': 'avg_sector3',
+        'tyre_compound_<lambda>': 'main_compound',
         'pitted_sum': 'pit_stop_count',
         'grid_position_first': 'grid_position',
         'finish_position_last': 'finish_position',
@@ -94,6 +102,17 @@ def aggregate_to_race_level(df):
         'humidity_mean': 'avg_humidity',
         'rainfall_mean': 'rain_probability'
     }, inplace=True)
+    
+    # 3. Reliability: Was the driver classified?
+    # Simple heuristic: if 'status' starts with 'Finished' or '+', count as classified.
+    def is_classified(status):
+        if pd.isna(status): return 0
+        status = str(status)
+        if status.startswith('Finished') or status.startswith('+'):
+            return 1
+        return 0
+    
+    race_df['is_classified'] = race_df['status'].apply(is_classified)
     
     # Calculate position gain
     race_df['position_gain'] = race_df['grid_position'] - race_df['finish_position']
