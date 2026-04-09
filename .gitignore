@@ -21,6 +21,3 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
-
-# Optional: ignore only heavy raw data
-data/raw/
