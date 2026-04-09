@@ -43,8 +43,8 @@ p1 <- ggplot(df_laps_filtered, aes(x = team, y = lap_time, fill = team)) +
        y = "Lap Time (s)", x = "Team") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave("plots/01_lap_time_distribution.png", plot = p1, width = 10, height = 6)
-print("Saved plots/01_lap_time_distribution.png")
+ggsave("outputs/plots/01_lap_time_distribution.png", plot = p1, width = 10, height = 6)
+print("Saved outputs/plots/01_lap_time_distribution.png")
 
 # 3. Scatter Plot: Qualifying vs Race Position
 p2 <- ggplot(df_race, aes(x = grid_position, y = finish_position)) +
@@ -55,8 +55,8 @@ p2 <- ggplot(df_race, aes(x = grid_position, y = finish_position)) +
   labs(title = "Qualifying vs Race Position",
        x = "Grid Position", y = "Finish Position")
 
-ggsave("plots/02_qualifying_vs_race_pos.png", plot = p2, width = 8, height = 6)
-print("Saved plots/02_qualifying_vs_race_pos.png")
+ggsave("outputs/plots/02_qualifying_vs_race_pos.png", plot = p2, width = 8, height = 6)
+print("Saved outputs/plots/02_qualifying_vs_race_pos.png")
 
 # 4. Correlation Heatmap
 # Select numerical columns
@@ -68,11 +68,11 @@ numeric_cols <- df_race %>% select(grid_position, finish_position, points,
 
 cor_matrix <- cor(numeric_cols)
 
-png("plots/03_correlation_heatmap.png", width = 800, height = 800)
+png("outputs/plots/03_correlation_heatmap.png", width = 800, height = 800)
 corrplot(cor_matrix, method = "color", type = "upper", 
          tl.col = "black", tl.srt = 45, addCoef.col = "black")
 dev.off()
-print("Saved plots/03_correlation_heatmap.png")
+print("Saved outputs/plots/03_correlation_heatmap.png")
 
 # 5. Driver Skill / Performance Change over Time (Bonus)
 # Let's see average finish position per season for top 5 drivers
@@ -95,5 +95,5 @@ p3 <- df_race %>%
   labs(title = "Average Finish Position by Season (Top 5 Drivers)",
        y = "Average Finish Position", x = "Season")
 
-ggsave("plots/04_driver_performance_trend.png", plot = p3, width = 10, height = 6)
-print("Saved plots/04_driver_performance_trend.png")
+ggsave("outputs/plots/04_driver_performance_trend.png", plot = p3, width = 10, height = 6)
+print("Saved outputs/plots/04_driver_performance_trend.png")

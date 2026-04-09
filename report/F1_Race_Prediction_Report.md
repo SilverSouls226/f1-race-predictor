@@ -36,18 +36,18 @@ Visualizations were generated using R (`ggplot2`, `corrplot`).
 - **Correlation Heatmap**: Identifying key drivers of success.
 
 ### Exploratory Analysis Visualization
-*(Plots are saved in `plots/` directory)*
+*(Plots are saved in `outputs/plots/` directory)*
 
 **1. Qualifying importance**:
-![Qualifying vs Race Position](/plots/02_qualifying_vs_race_pos.png)
+![Qualifying vs Race Position](/outputs/plots/02_qualifying_vs_race_pos.png)
 *Strong correlation observes, but variance exists due to race incidents/strategy.*
 
 **2. Team Performance**:
-![Lap Time Distribution](/plots/01_lap_time_distribution.png)
+![Lap Time Distribution](/outputs/plots/01_lap_time_distribution.png)
 *Top teams show consistently lower and more stable lap times.*
 
 **3. Driver Trends**:
-![Driver Performance Trend](/plots/04_driver_performance_trend.png)
+![Driver Performance Trend](/outputs/plots/04_driver_performance_trend.png)
 
 ## 4. Results & Evaluation
 

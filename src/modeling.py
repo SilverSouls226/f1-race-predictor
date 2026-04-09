@@ -172,10 +172,10 @@ def train_and_evaluate(df):
     plt.xlabel('Importance')
     plt.title('Gradient Boosting Feature Importance')
     plt.gca().invert_yaxis()
-    if not os.path.exists("plots"):
-        os.mkdir("plots")
-    plt.savefig("plots/05_feature_importance.png")
-    print("\nSaved plots/05_feature_importance.png")
+    if not os.path.exists("outputs/plots"):
+        os.makedirs("outputs/plots", exist_ok=True)
+    plt.savefig("outputs/plots/05_feature_importance.png")
+    print("\nSaved outputs/plots/05_feature_importance.png")
 
 if __name__ == "__main__":
     df = load_data()

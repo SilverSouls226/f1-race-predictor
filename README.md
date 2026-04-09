@@ -1,6 +1,6 @@
 # Formula 1 Race Outcome Prediction
 
-![Feature Importance](plots/05_feature_importance.png)
+![Feature Importance](outputs/plots/05_feature_importance.png)
 
 Predicting **Formula 1 driver finishing positions** using machine learning on historical race telemetry.
 
