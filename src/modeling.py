@@ -29,6 +29,8 @@ def prepare_modeling_data(df):
     # Fill NA for first races
     df = df.fillna(0) # Simplified
     
+    df['team_name'] = df['team']
+    
     # Encode categorical
     # One-hot encoding for Team and Compound
     df_encoded = pd.get_dummies(df, columns=['team', 'main_compound'], drop_first=True)
@@ -46,7 +48,9 @@ def prepare_modeling_data(df):
     target = 'finish_position'
     
     # Filter columns
-    model_df = df_encoded[features + [target, 'season', 'event_date']]
+    # We must keep categorical identifiers 'driver' and 'team' for Dash dashboard tracing
+    model_df = df_encoded[features + [target, 'season', 'event_date', 'driver', 'team_name']]
+    model_df = model_df.rename(columns={'team_name': 'team'})
     
     return model_df
 
@@ -60,11 +64,16 @@ def train_and_evaluate(df):
     
     print(f"Train size: {len(train_df)}, Test size: {len(test_df)}")
     
-    features = [c for c in df.columns if c not in ['finish_position', 'season', 'event_date']]
+    # We drop mapping columns for training but keep them in test_meta
+    drop_features = ['finish_position', 'season', 'event_date', 'driver', 'team']
+    features = [c for c in df.columns if c not in drop_features]
     target = 'finish_position'
     
     X_train = train_df[features]
     y_train = train_df[target]
+    
+    # We maintain identifying meta-data for Dash graphs
+    test_meta = test_df[['driver', 'team', 'event_date']].copy()
     X_test = test_df[features]
     y_test = test_df[target]
     
@@ -81,7 +90,9 @@ def train_and_evaluate(df):
         ('lr', LinearRegression())
     ])
     lr_pipe.fit(X_train, y_train)
+    lr_pipe.fit(X_train, y_train)
     y_pred_lr = lr_pipe.predict(X_test)
+    test_meta['LR_Pred'] = y_pred_lr
     
     results['Linear Regression'] = {
         'RMSE': np.sqrt(mean_squared_error(y_test, y_pred_lr)),
@@ -111,6 +122,7 @@ def train_and_evaluate(df):
     print(f"Best RF Params: {rf_search.best_params_}")
     
     y_pred_rf = best_rf.predict(X_test)
+    test_meta['RF_Pred'] = y_pred_rf
     
     results['Random Forest (Tuned)'] = {
         'RMSE': np.sqrt(mean_squared_error(y_test, y_pred_rf)),
@@ -118,6 +130,21 @@ def train_and_evaluate(df):
         'R2': r2_score(y_test, y_pred_rf)
     }
     
+    # 3. Gradient Boosting
+    from sklearn.ensemble import GradientBoostingRegressor
+    print("\nTraining Gradient Boosting...")
+    gb = GradientBoostingRegressor(random_state=42, n_estimators=200, max_depth=5)
+    gb.fit(X_train, y_train)
+    y_pred_gb = gb.predict(X_test)
+    test_meta['GB_Pred'] = y_pred_gb
+    test_meta['Actual'] = y_test
+    
+    results['Gradient Boosting'] = {
+        'RMSE': np.sqrt(mean_squared_error(y_test, y_pred_gb)),
+        'MAE': mean_absolute_error(y_test, y_pred_gb),
+        'R2': r2_score(y_test, y_pred_gb)
+    }
+
     # Print results
     print("\nModel Evaluation Results:")
     for model, metrics in results.items():
@@ -125,20 +152,25 @@ def train_and_evaluate(df):
         for metric, value in metrics.items():
             print(f"  {metric}: {value:.4f}")
             
-    # Feature Importance (Best RF)
+    # Export predictions for Dash Dashboard
+    os.makedirs("data", exist_ok=True)
+    test_meta.to_csv("data/model_predictions.csv", index=False)
+    print("Saved predictions to data/model_predictions.csv")
+            
+    # Feature Importance (GB and RF)
     importances = pd.DataFrame({
         'feature': X_train.columns,
-        'importance': best_rf.feature_importances_
+        'importance': gb.feature_importances_
     }).sort_values('importance', ascending=False)
     
-    print("\nTop 10 Feature Importances:")
-    print(importances.head(10))
+    importances.to_csv("data/feature_importance.csv", index=False)
+    print("Saved GB feature importance to data/feature_importance.csv")
     
     # Save Feature Importance Plot
     plt.figure(figsize=(10, 6))
     plt.barh(importances['feature'].head(10), importances['importance'].head(10))
     plt.xlabel('Importance')
-    plt.title('Random Forest Feature Importance (Tuned)')
+    plt.title('Gradient Boosting Feature Importance')
     plt.gca().invert_yaxis()
     if not os.path.exists("plots"):
         os.mkdir("plots")
