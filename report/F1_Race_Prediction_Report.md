@@ -95,14 +95,22 @@ The project has recently expanded to include a deep learning neural network buil
 | Model | RMSE | MAE | R-Squared | Status |
 |-------|------|-----|-----------|--------|
 | Linear Regression (Scaled) | 3.76 | 2.98 | 0.57 | Phase 2 Baseline |
-| **Random Forest (Tuned)** | **3.11** | **2.33** | **0.71** | **Best Peak Performance** |
-| Deep Learning MLP (50 Epochs) | 3.29 | 2.58 | 0.67 | Promising New Baseline |
+| **Random Forest (Tuned)** | **3.11** | **2.33** | **0.71** | **Phase 2 Peak Performance** |
+| Gradient Boosting | 3.20 | 2.41 | 0.69 | Tree Baseline Supplemental |
+| **Deep Learning MLP (256->128 Wide Net)** | **2.98** | **2.12** | **0.761** | **Current Peak Accuracy** |
 
 ### 5.2 Analysis
 
-The introduction of the Deep Learning model proved highly successful. On its base configuration with just 50 epochs, it significantly outperformed the Phase 2 Linear Regression model (`R2: 0.67` vs `0.57`). 
+The introduction of the Deep Learning model resulted in the highest statistical ceiling for the project thus far. By scaling the neural network horizontally (bypassing dropouts to utilize a 256 -> 128 hidden layer array over 350 epochs), it forcibly extracted high-fidelity relationships out of the Driver/Team Categorical Embeddings. The test-set R² eclipsed the 75% goal line (`R2: 0.761`), outperforming even the optimized Random Forest structure. 
 
-While it slightly underperforms compared to the highly optimized Phase 2 Random Forest (`R2: 0.71`), this is an extremely promising baseline. The Random Forest underwent an extensive `RandomizedSearchCV` across multiple variables, while the neural network is completely untuned. Deep learning models also typically demand significantly larger data volumes than what is aggregated here, meaning the neural network is extracting high-fidelity relationships out of relatively sparse historical rows.
+## 6. Streamlit Dashboard `app.py`
+
+Following the legacy `05_dashboard.py` Dash application, the UX flow was entirely refactored into a modern `Streamlit` instance. 
+
+Key features include:
+1. **Interactive Live Predictor**: Allowing users to dynamically inject Weather, Grid Position, Driver, and Tyre choices directly into the `PyTorch` (`f1_dl_model.pth`) weights matrix for instantaneous hypotheticals.
+2. **Visual Model Alignments**: Utilizing the backend pipelines, actual validation points vs predicted validation points from Random Forest, Gradient Boosting, and PyTorch models are rendered identically side-by-side using `Plotly`.
+3. **Tabular Centering**: Streamlit's constraints were subverted using injected HTML CSS wrappers to gracefully center the UX components.
 
 ## 6. Conclusion
 The project successfully evolved from a baseline predictor (R2 ~0.4) to an optimized pipeline achieving high-fidelity results (R2 ~0.7). The single most impactful improvement was the explicit modeling of race reliability via the `is_classified` flag, followed by systematic hyperparameter tuning of the Random Forest model. Now, a robust PyTorch infrastructure offers further avenues of improvement via Deep Learning.

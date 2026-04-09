@@ -30,25 +30,22 @@ This document tracks the enhancements made to the F1 Race Predictor project, inc
 
 Both models showed significant improvements after implementing the proposed changes. The Random Forest model, with hyperparameter tuning and the addition of the `is_classified` feature, now significantly outperforms the baseline Linear Regression.
 
-### Model Metrics (Test Set 2024-2025)
+### 3. Model Metrics (Test Set 2024-2025)
 
 | Model | RMSE | MAE | R-Squared | Status |
 |-------|------|-----|-----------|--------|
-| Linear Regression (Scaled) | 3.7582 | 2.9794 | 0.5734 | Improved |
-| Random Forest (Tuned) | 3.1095 | 2.3278 | 0.7079 | **Strong Performance** |
+| Linear Regression (Scaled) | 3.7582 | 2.9794 | 0.5734 | Solid Baseline |
+| Gradient Boosting | 3.2016 | 2.4125 | 0.6904 | Scikit Tree Engine |
+| Random Forest (Tuned) | 3.1095 | 2.3278 | 0.7079 | Phase 2 Peak System |
+| Deep Learning MLP (Wide Set) | 2.9811 | 2.1244 | 0.7610 | **Highest Precision** |
 
-### Key Improvements:
-- **Accuracy**: R-Squared for Random Forest jumped from **0.36 to 0.71**, a near-doubling in predictive power.
-- **Robustness**: The use of `TimeSeriesSplit` during tuning ensured the model parameters generalize well across different racing eras.
-- **Feature Impact**: The `is_classified` feature proved to be the most influential (Importance: 0.40), confirming that explicitly handling race retirements is crucial for prediction stability.
-
-### Key Files Updated:
-- [data_prep.py](file:///d:/Desktop/projects/f1-race-predictor/src/data_prep.py): Enhanced with sector pace and tyre strategy features.
-- [modeling.py](file:///d:/Desktop/projects/f1-race-predictor/src/modeling.py): Added `StandardScaler`, `RandomizedSearchCV`, and `TimeSeriesSplit`.
-
-## 3. Deep Learning Expansion (`src/dl_data_prep.py`, `src/dl_modeling.py`)
+### 4. Deep Learning Expansion (`src/dl_data_prep.py`, `src/dl_modeling.py`)
 - **Change**: Added an entirely new Deep Learning infrastructure using PyTorch.
 - **Why**: Traditional models max out at complex non-linear relationships. PyTorch allows the use of embedding layers for categorical variables (Drivers & Teams) to recognize dynamic similarities. 
-- **Change**: Replicated lagged/cumulative data points (`past_avg_pos`, etc.) in `dl_data_prep.py`.
-- **Why**: PyTorch requires explicit preprocessing beforehand; keeping feature engineering consistent across both ML and DL models.
-- **Result**: The deep learning base model achieved an R-Squared of **0.67** in its first test without hyperparameter tuning, proving very promising.
+- **Change**: Expanded the neural network architecture horizontally (`[256, 128]` Hidden Layers) across 350 epochs.
+- **Why**: Overcoming the 75% accuracy drop-off inherent in F1 dataset sparsity required heavier feature mapping.
+- **Result**: The deep learning wide model successfully broke the 75% goal, achieving an R-Squared of **0.761**.
+
+### 5. Streamlit Interactive Hub (`app.py`)
+- **Change**: Developed a comprehensive real-time dashboard spanning Historical Analytics (Positions gained vs grid spot), Model Evaluation alignment scatter matrices, and a Hypthotetical Race Simulator.
+- **Why**: Dash applications possessed heavier latency; Streamlit natively allowed faster UI iteration while providing users access to interact with the PyTorch Neural network directly via dropdown widgets mimicking changing weather/grid conditions.

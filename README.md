@@ -48,9 +48,13 @@ f1-race-predictor
 ├── data
 │   ├── raw
 │   └── processed
+│   └── dl_processed
 │
 ├── plots
 │   └── visualizations
+│
+├── app.py (Interactive Streamlit Dashboard)
+├── 05_dashboard.py (Legacy Dash UI)
 │
 └── report
     └── project report and methodology
@@ -68,7 +72,11 @@ Two regression models were implemented:
 
 **Random Forest Regressor**
 
-* ensemble model capturing non-linear relationships
+**Gradient Boosting Regressor**
+*   tree-based ensemble utilizing error-correction boosting
+
+**Deep Learning (PyTorch MLP)**
+*   Multi-layer perceptron leveraging high-density categorical embeddings for Driver and Team dynamics, utilizing a wide architecture (256 -> 128 layers).
 
 Evaluation metrics:
 
@@ -86,8 +94,10 @@ Test set: **2024–2025 seasons**
 
 | Model             | RMSE | MAE  | R²   |
 | ----------------- | ---- | ---- | ---- |
-| Linear Regression | 4.35 | 3.49 | 0.43 |
-| Random Forest     | 4.60 | 3.68 | 0.36 |
+| Linear Regression | 3.75 | 2.97 | 0.57 |
+| Gradient Boosting | 3.20 | 2.41 | 0.69 |
+| Random Forest     | 3.11 | 2.33 | 0.71 |
+| PyTorch MLP (Wide)| 2.98 | 2.12 | 0.76 |
 
 Grid position, team performance, and driver historical results were among the strongest predictors.
 
@@ -119,10 +129,22 @@ Generate analysis plots:
 Rscript analysis/eda.R
 ```
 
-Train models:
+Train Classic Models (RF, GB, LR):
 
 ```
 python src/modeling.py
+```
+
+Train Deep Learning Matrix (PyTorch):
+
+```
+python src/dl_modeling.py
+```
+
+Run Interactive Streamlit Dashboard:
+
+```
+python -m streamlit run app.py
 ```
 
 ---
