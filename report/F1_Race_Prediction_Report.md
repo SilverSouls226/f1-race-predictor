@@ -80,10 +80,35 @@ Visualizations were generated using R (`ggplot2`, `corrplot`).
 | **Team Power** | 0.13 | 0.15 |
 | **Weather/Sectors** | 0.12 (Temp) | 0.08 (Sect 2) |
 
-## 5. Conclusion
-The project successfully evolved from a baseline predictor (R2 ~0.4) to an optimized pipeline achieving high-fidelity results (R2 ~0.7). The single most impactful improvement was the explicit modeling of race reliability via the `is_classified` flag, followed by systematic hyperparameter tuning of the Random Forest model.
+## 5. Phase 3: Deep Learning Implementation (New)
+
+The project has recently expanded to include a deep learning neural network built with PyTorch (`src/dl_modeling.py`). 
+
+### Architecture
+- **Categorical Embeddings**: Instead of simple one-hot encoding, the model learns continuous vector representations (embeddings) for critical entities like Drivers and Teams. This allows the model to map relationship distances (e.g., driver styles).
+- **Multi-layer Perceptron (MLP)**: A feed-forward network mapping the concatenated numerical features + embeddings to regression outputs. (Configuration: 64 neurons -> Dropout 20% -> 32 neurons -> 1 output).
+
+### 5.1 Deep Learning vs. Phase 2 Machine Learning
+
+*(Metrics evaluated on 2024-2025 Test Set)*
+
+| Model | RMSE | MAE | R-Squared | Status |
+|-------|------|-----|-----------|--------|
+| Linear Regression (Scaled) | 3.76 | 2.98 | 0.57 | Phase 2 Baseline |
+| **Random Forest (Tuned)** | **3.11** | **2.33** | **0.71** | **Best Peak Performance** |
+| Deep Learning MLP (50 Epochs) | 3.29 | 2.58 | 0.67 | Promising New Baseline |
+
+### 5.2 Analysis
+
+The introduction of the Deep Learning model proved highly successful. On its base configuration with just 50 epochs, it significantly outperformed the Phase 2 Linear Regression model (`R2: 0.67` vs `0.57`). 
+
+While it slightly underperforms compared to the highly optimized Phase 2 Random Forest (`R2: 0.71`), this is an extremely promising baseline. The Random Forest underwent an extensive `RandomizedSearchCV` across multiple variables, while the neural network is completely untuned. Deep learning models also typically demand significantly larger data volumes than what is aggregated here, meaning the neural network is extracting high-fidelity relationships out of relatively sparse historical rows.
+
+## 6. Conclusion
+The project successfully evolved from a baseline predictor (R2 ~0.4) to an optimized pipeline achieving high-fidelity results (R2 ~0.7). The single most impactful improvement was the explicit modeling of race reliability via the `is_classified` flag, followed by systematic hyperparameter tuning of the Random Forest model. Now, a robust PyTorch infrastructure offers further avenues of improvement via Deep Learning.
 
 Future work will continue to explore:
+- Deep Learning Hyperparameter Tuning (epochs, learning rate scheduling, deeper network architectures).
 - Live-race simulation features.
 - More granular tyre strategy features.
 - Real-time telemetry integration.

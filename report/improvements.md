@@ -45,3 +45,10 @@ Both models showed significant improvements after implementing the proposed chan
 ### Key Files Updated:
 - [data_prep.py](file:///d:/Desktop/projects/f1-race-predictor/src/data_prep.py): Enhanced with sector pace and tyre strategy features.
 - [modeling.py](file:///d:/Desktop/projects/f1-race-predictor/src/modeling.py): Added `StandardScaler`, `RandomizedSearchCV`, and `TimeSeriesSplit`.
+
+## 3. Deep Learning Expansion (`src/dl_data_prep.py`, `src/dl_modeling.py`)
+- **Change**: Added an entirely new Deep Learning infrastructure using PyTorch.
+- **Why**: Traditional models max out at complex non-linear relationships. PyTorch allows the use of embedding layers for categorical variables (Drivers & Teams) to recognize dynamic similarities. 
+- **Change**: Replicated lagged/cumulative data points (`past_avg_pos`, etc.) in `dl_data_prep.py`.
+- **Why**: PyTorch requires explicit preprocessing beforehand; keeping feature engineering consistent across both ML and DL models.
+- **Result**: The deep learning base model achieved an R-Squared of **0.67** in its first test without hyperparameter tuning, proving very promising.

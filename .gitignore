@@ -1,4 +1,26 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Models & artifacts (these WILL bloat your repo)
+*.pth
+*.pt
+*.joblib
+*.pkl
+
+# Logs & temp
+*.log
+*.tmp
+*.cache
+
+# IDE
+.vscode/
+.idea/
+
+# OS
 .DS_Store
-cache/
+Thumbs.db
+
+# Optional: ignore only heavy raw data
+data/raw/
