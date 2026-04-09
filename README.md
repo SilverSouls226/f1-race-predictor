@@ -151,18 +151,18 @@ python -m streamlit run app.py
 
 # Tech Stack
 
-Python
-R
-FastF1 API
-pandas
-scikit-learn
-ggplot2
-matplotlib
+- Python
+- R
+- FastF1 API
+- pandas
+- scikit-learn
+- ggplot2
+- matplotlib
 
 ---
 
 # License
 
-MIT License
+This project is licensed under the **MIT License**.
 
 ---
